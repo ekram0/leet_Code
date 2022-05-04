@@ -49,7 +49,28 @@ Explanation:
 Users 1 and 2 have two common followers (3 and 4).
 Users 1 and 7 have three common followers (3, 4, and 5).
 Users 2 and 7 have two common followers (3 and 4).
-Since the maximum number of common followers between any two users is 3, we return all pairs of users with three common followers, which is only the pair (1, 7). We return the pair as (1, 7), not as (7, 1).
+Since the maximum number of common followers between any two users is 3, we return all pairs of users with three common followers, which is only the pair (1, 7).
+ We return the pair as (1, 7), not as (7, 1).
 Note that we do not have any information about the users that follow users 3, 4, and 5, so we consider them to have 0 followers.
 
 */
+
+with
+    ct1
+    as
+    (
+        select
+            s.user_id as user1_id, b.user_id as user2_id,
+            rank() over (order by count(*) desc) as rk
+        from Relations s
+            join Relations b on s.user_id < b.user_id and
+                s.follower_id = b.follower_id
+        group by
+    s.user_id, b.user_id
+    )
+select
+    user1_id, user2_id
+from
+    ct1
+where
+    rk=1
