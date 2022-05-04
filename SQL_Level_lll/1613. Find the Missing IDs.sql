@@ -69,3 +69,17 @@ from Customers
 select customer_id, diff
 from level1
 where diff > 1;
+
+/*------------------------------------------------------------------------------------------------*/
+
+
+with t as
+(
+select 1 as ids,max(customer_id) as mx from customers
+    union all
+select ids +1 as ids, mx from t where ids < mx
+)
+
+select  ids from t
+except
+select customer_id as ids from customers
